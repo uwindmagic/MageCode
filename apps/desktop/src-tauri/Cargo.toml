@@ -1,0 +1,20 @@
+[package]
+name = "agent-tasks-desktop"
+version = "0.3.0"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "=2.7.4", features = [] }
+
+[dependencies]
+tauri = { version = "=2.12.5", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.37", features = ["bundled"] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[[bin]]
+name = "MageCode"
+path = "src/main.rs"

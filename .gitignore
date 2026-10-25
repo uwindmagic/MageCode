@@ -1,0 +1,20 @@
+node_modules/
+dist/
+target/
+*.log
+.DS_Store
+
+# Local-only data, credentials and investigation samples
+.source-samples/
+.magecode/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template

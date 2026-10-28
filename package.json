@@ -1,17 +1,12 @@
 {
-  "name": "agent-tasks",
-  "version": "0.3.0",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "apps/desktop"
-  ],
+  "name": "agent-tasks", "version": "0.2.0", "private": true, "type": "module",
+  "workspaces": ["apps/desktop"],
   "scripts": {
     "dev": "npm run dev --workspace apps/desktop",
     "build": "npm run build --workspace apps/desktop",
     "preview": "npm run preview --workspace apps/desktop",
     "desktop": "npm run tauri --workspace apps/desktop -- dev",
     "desktop:build": "npm run tauri --workspace apps/desktop -- build",
-    "test": "node --test tests/navigation.test.mjs"
+    "test": "node --experimental-strip-types --test tests/*.test.mjs"
   }
 }

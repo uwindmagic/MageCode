@@ -9,9 +9,10 @@ export const tools = [
   { id: 'qwen', name: '千问办工', short: '千问办工', color: '#bb9a4e', position: '100% 100%', role: '把业务问题，整理成行动方案', initials: '千' },
 ] as const;
 export type Tool = typeof tools[number];
-export type SessionStatus = 'running' | 'waiting' | 'completed' | 'idle';
-export type Message = { role: 'user' | 'assistant'; text: string; time: string };
-export type Session = { id: string; tool: string; toolName: string; project: string; projectName: string; nativeProject: string; title: string; purpose: string; updated: string; status?:SessionStatus; lastActiveAt?:string; archived?: boolean; source?: 'codex-local'; nativeId?: string; sourceUrl?: string; messages: Message[]; tasks: { title: string; done: boolean }[]; files: string[] };
+export type SessionStatus = 'running' | 'waiting' | 'completed' | 'idle' | 'unknown';
+export type Message = { role: 'user' | 'assistant' | 'excerpt'; text: string; time: string };
+export type Source = {kind:'codex_local'|'chatgpt_text';nativeId?:string;nativeUrl?:string;sourceTitle:string;sourceUpdatedAt?:number;sourceCreatedAt?:number;observedAt:number;model?:string;projectPath?:string;nativeProjectId?:string;loaded?:boolean;warnings?:string[]};
+export type Session = { id: string; tool: string; toolName: string; project: string; projectName: string; nativeProject: string; title: string; purpose: string; updated: string; status?:SessionStatus; lastActiveAt?:string; archived?: boolean; messages: Message[]; tasks: { title: string; done: boolean }[]; files: string[];source?:Source };
 export const projects = [
   { id: 'knowledge', name: '知识库管理网站', description: '让零散的知识，变成随手可用的资料', icon: 'folder' },
   { id: 'agent-hub', name: 'AI Agent 中台', description: '看见每个 Agent 正在做什么', icon: 'sparkles' },
@@ -42,8 +43,8 @@ export const storageKey = 'agent-tasks-v0.1';
 export function loadSessions(): Session[] {
   try {
     const value = JSON.parse(localStorage.getItem(storageKey) || 'null');
-    if (Array.isArray(value) && value.length && value.every(s => s && typeof s.id === 'string' && tools.some(t=>t.id===s.tool) && projects.some(p=>p.id===s.project) && typeof s.title==='string' && typeof s.purpose==='string' && Array.isArray(s.messages) && s.messages.every((m: Message)=>m&&['user','assistant'].includes(m.role) && typeof m.text==='string') && Array.isArray(s.tasks) && s.tasks.every((t:{title:string;done:boolean})=>t&&typeof t.title==='string'&&typeof t.done==='boolean') && Array.isArray(s.files)&&s.files.every((f:unknown)=>typeof f==='string'))) {
-      return value.map(s=>{const seed=initialSessions.find(i=>i.id===s.id);return {...s,status:['running','waiting','completed','idle'].includes(s.status)?s.status:seed?.status||'idle',lastActiveAt:s.lastActiveAt||seed?.lastActiveAt};});
+    if (Array.isArray(value) && value.length && value.every(s => s && typeof s.id === 'string' && tools.some(t=>t.id===s.tool) && (projects.some(p=>p.id===s.project)||s.project==='chatgpt-inbox'||s.project?.startsWith('native:')) && typeof s.title==='string' && typeof s.purpose==='string' && Array.isArray(s.messages) && s.messages.every((m: Message)=>m&&['user','assistant','excerpt'].includes(m.role) && typeof m.text==='string') && Array.isArray(s.tasks) && s.tasks.every((t:{title:string;done:boolean})=>t&&typeof t.title==='string'&&typeof t.done==='boolean') && Array.isArray(s.files)&&s.files.every((f:unknown)=>typeof f==='string'))) {
+      return value.map(s=>{const seed=initialSessions.find(i=>i.id===s.id);return {...s,status:['running','waiting','completed','idle','unknown'].includes(s.status)?s.status:seed?.status||'idle',lastActiveAt:s.lastActiveAt||seed?.lastActiveAt};});
     }
   } catch { /* Invalid demo state falls back to bundled examples. */ }
   return initialSessions;

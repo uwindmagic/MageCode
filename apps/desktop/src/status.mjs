@@ -1,6 +1,6 @@
-export const statusLabels = {running:'进行中',waiting:'等待处理',completed:'已完成',idle:'空闲',archived:'已归档'};
-/** @returns {'running'|'waiting'|'completed'|'idle'|'archived'} */
-export function sessionStatus(session) { return session.archived ? 'archived' : Object.hasOwn(statusLabels,session.status) && session.status!=='archived' ? session.status : 'idle'; }
+export const statusLabels = {running:'进行中',waiting:'等待处理',completed:'已完成',idle:'空闲',archived:'已归档',unknown:'未知'};
+/** @returns {'running'|'waiting'|'completed'|'idle'|'archived'|'unknown'} */
+export function sessionStatus(session) { return session.archived ? 'archived' : Object.hasOwn(statusLabels,session.status) && session.status!=='archived' ? session.status : session.source?'unknown':'idle'; }
 export function relativeTime(value, now=Date.now()) {
   const time=Date.parse(value);
   if(!Number.isFinite(time))return '未知';
@@ -9,5 +9,6 @@ export function relativeTime(value, now=Date.now()) {
 }
 export function agentStatus(sessions,tool) {
   const active=sessions.filter(s=>s.tool===tool&&!s.archived);
+  if(active.some(s=>s.source))return 'unknown';
   return active.some(s=>sessionStatus(s)==='running')?'running':active.some(s=>sessionStatus(s)==='waiting')?'waiting':'idle';
 }

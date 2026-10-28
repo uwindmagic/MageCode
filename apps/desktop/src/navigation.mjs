@@ -1,10 +1,7 @@
 export const tabs = ['chat', 'tasks', 'files', 'activity'];
-function decodeRoutePart(value) {
-  try { return decodeURIComponent(value); } catch { return value; }
-}
 export function parseRoute(hash) {
-  const [page = 'workspace', tool = 'all', session = 's2', tab = 'chat'] = hash.replace(/^#\/?/, '').split('/');
-  return { page: ['workspace', 'tools', 'archive', 'settings'].includes(page) ? page : 'workspace', tool:decodeRoutePart(tool), session:decodeRoutePart(session), tab: tabs.includes(tab) ? tab : 'chat' };
+  const [page = 'workspace', tool = 'all', session = 's2', tab = 'chat'] = hash.replace(/^#\/?/, '').split('/').map(part=>{try{return decodeURIComponent(part);}catch{return '';}});
+  return { page: ['workspace', 'tools', 'archive', 'settings'].includes(page) ? page : 'workspace', tool, session, tab: tabs.includes(tab) ? tab : 'chat' };
 }
 export function routeFor(route) {
   return `#/${route.page}/${encodeURIComponent(route.tool)}/${encodeURIComponent(route.session)}/${route.tab}`;

@@ -160,3 +160,7 @@ Tauri capabilities 最小授权；命令再次检查参数与能力。Markdown �
 性能目标尚未实测：1 万会话/100 万消息，热索引标题搜索 P95 < 300ms，正文 < 1s；短词搜索单独报告。测试报告记录硬件、系统、语料规模、覆盖率和冷/热状态。首次索引耗时另计。
 
 架构决策依据见 [ADR](docs/adr/decisions-v0.1.md)。实际构建与界面验证以对应版本记录为准。产品 v0.1 的 8 个工具为 ChatGPT、Claude Code、Trae（CN）、Kimi、Deepseek Harness、Workbuddy、豆包工作、千问办工，取代早期候选清单；产品展示保留用户原始命名。
+
+## v0.2 实施补充
+
+已实现 crates/local-source 独立 Rust 只读模块，Tauri IPC 调用。浏览器预览需显式启用同一程序的 --source-server 模式（Axum，127.0.0.1:1421，Host/Origin 校验），桌面常规模式不监听端口。此项替代首期不需要预览后端的假设；自有 SQLite 索引缓存仍未实现。默认来源为 Codex 本地，非网页 ChatGPT 历史。实际验收边界见 v0.2 记录。

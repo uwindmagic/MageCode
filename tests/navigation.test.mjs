@@ -13,8 +13,9 @@ test('demo status aggregation ignores archives; relative activity handles minute
 test('routes survive refresh and tab navigation; unknown pages/tabs have safe defaults',()=>{
   const route={page:'tools',tool:'claude',session:'s2',tab:'files'};
   assert.deepEqual(parseRoute(routeFor(route)),route);
-  const codexRoute={page:'tools',tool:'chatgpt',session:'codex:01a17456-ac5d-7592-a93e-e8430a661fea',tab:'chat'};
-  assert.deepEqual(parseRoute(routeFor(codexRoute)),codexRoute);
+  const imported={...route,session:'codex-local:01a174b3-1a61-7830-89dd-68847d814340'};
+  assert.deepEqual(parseRoute(routeFor(imported)),imported);
+  assert.doesNotThrow(()=>parseRoute('#/tools/all/%bad/chat'));
   assert.equal(parseRoute('#/nonsense/all/s2/wrong').page,'workspace');
   assert.equal(parseRoute('#/nonsense/all/s2/wrong').tab,'chat');
 });
